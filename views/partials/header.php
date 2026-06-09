@@ -15,15 +15,6 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 <body<?php if (isset($body_class)) echo ' class="' . htmlspecialchars($body_class, ENT_QUOTES, 'UTF-8') . '"'; ?><?php if (isset($_SESSION['user_id'])) echo ' data-user-id="' . (int)$_SESSION['user_id'] . '"'; ?>>
 <nav class="navbar">
   <div class="nav-brand"><a href="index.php">CoA</a></div>
-  <div class="nav-auth">
-    <?php if (isset($_SESSION['user_id'])): ?>
-      <span class="role-badge"><?= htmlspecialchars($_SESSION['role'] ?? '', ENT_QUOTES, 'UTF-8') ?></span>
-      <a href="logout.php">Deconectare</a>
-    <?php else: ?>
-      <a href="login.php">Autentificare</a>
-      <a href="signup.php">Înregistrare</a>
-    <?php endif; ?>
-  </div>
   <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">&#9776;</button>
   <div class="nav-links" id="nav-links">
     <a href="index.php"<?= ($current_page ?? '') === 'home' ? ' class="active"' : '' ?>>Acasa</a>
@@ -37,6 +28,15 @@ if (session_status() === PHP_SESSION_NONE) session_start();
       <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
         <a href="admin.php"<?= ($current_page ?? '') === 'admin' ? ' class="active"' : '' ?>>Admin</a>
       <?php endif; ?>
+    <?php endif; ?>
+  </div>
+  <div class="nav-auth">
+    <?php if (isset($_SESSION['user_id'])): ?>
+      <span class="role-badge"><?= htmlspecialchars($_SESSION['role'] ?? '', ENT_QUOTES, 'UTF-8') ?></span>
+      <a href="logout.php">Deconectare</a>
+    <?php else: ?>
+      <a href="login.php">Autentificare</a>
+      <a href="signup.php">Înregistrare</a>
     <?php endif; ?>
   </div>
 </nav>
