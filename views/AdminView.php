@@ -1,8 +1,6 @@
 <?php
 // AdminView.php - Structura tab-urilor din panoul admin
-// Continutul se incarca dinamic cu Ajax (nu la page load)
-// AdminView.php - Layout panoul de admin cu tab-uri
-// Continutul fiecarui tab se incarca dinamic cu JS (Ajax)
+// Continutul fiecarui tab se incarca dinamic cu JS (admin.js)
 function display_admin_panel($data) {
     echo '<div class="admin-tabs">';
     echo '<nav class="tab-nav"><button class="tab-btn active" data-tab="shelters">Ad&#259;posturi</button><button class="tab-btn" data-tab="events">Crize</button><button class="tab-btn" data-tab="users">Utilizatori</button><button class="tab-btn" data-tab="export">Export</button><button class="tab-btn" data-tab="import">Import</button><button class="tab-btn" data-tab="alerts">Alerte</button></nav>';

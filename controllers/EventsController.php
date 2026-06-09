@@ -120,12 +120,12 @@ function events_update_action($id, $data) {
             alerts_save($id, 'COA-' . date('YmdHis') . '-' . $id, $xml, 'Alert');
         }
     } elseif ($is_edit) {
-        // Editare normala: msg_type ramane Alert, XML regenerat
-        $xml = cap_generate($event_data, 'Alert');
+        // Editare normala: msg_type devine Update (CAP v1.2), XML regenerat
+        $xml = cap_generate($event_data, 'Update');
         if ($existing_alert) {
-            alerts_update_msg_type($existing_alert['id'], 'Alert', $xml);
+            alerts_update_msg_type($existing_alert['id'], 'Update', $xml);
         } else {
-            alerts_save($id, 'COA-' . date('YmdHis') . '-' . $id, $xml, 'Alert');
+            alerts_save($id, 'COA-' . date('YmdHis') . '-' . $id, $xml, 'Update');
         }
     }
 

@@ -1,9 +1,7 @@
 <?php
 // admin.php - Panoul de administrare complet (doar admin)
 // 6 tab-uri: Adaposturi, Crize, Utilizatori, Export, Import, Alerte
-// Toate operatiile CRUD se fac prin Ajax fara reload de pagina
-// admin.php - Panoul de administrare complet (doar admin)
-// Tab-uri: Adaposturi, Crize, Utilizatori, Export, Import, Alerte
+// Toate CRUD se fac prin Ajax fara reload; js incarcat din admin.js
 session_start();
 require_once __DIR__ . '/controllers/AuthController.php';
 auth_require('admin');

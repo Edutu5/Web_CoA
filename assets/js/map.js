@@ -166,25 +166,11 @@ document.addEventListener('DOMContentLoaded', function() {
         weight: 1, dashArray: '5,5', interactive: false
       }).addTo(evLayer);
 
-      // Ruta prin API server (route_auto.php face OSRM din PHP, evitam probleme CORS/browser)
-      apiGet('api/route_auto.php?event_id=' + ev.id).then(function(result) {
-        if (!result.success || !result.routes || !result.routes.length) return;
-        var nearest = result.routes[0];
-        // Deseneaza ruta (geometrie returnata de OSRM prin server)
-        if (nearest.geometry && nearest.geometry.length > 1) {
-          L.polyline(nearest.geometry, { color: c, weight: 4, opacity: 0.85 }).addTo(routeLayer);
-        }
-        // Marker adapost tinta
-        var sh = nearest.shelter;
-        var destPopup = makePopup([
-          { tag: 'strong', text: sh.name, br: true },
-          { tag: 'span', text: sh.address || '', br: true },
-          { tag: 'span', text: 'Adapost tinta | Distanta: ' + nearest.distance_km + ' km | Durata: ~' + nearest.duration_min + ' min' }
-        ]);
-        L.circleMarker([parseFloat(sh.latitude), parseFloat(sh.longitude)], {
-          radius: 9, color: '#fff', fillColor: c, fillOpacity: 1, weight: 3
-        }).addTo(routeLayer).bindPopup(destPopup);
-      }).catch(function() { /* route_auto nu a raspuns - nu desenam ruta */ });
+      // Ruta catre cel mai apropiat adapost de tipul potrivit
+      var match = findNearestShelter(ev.latitude, ev.longitude, ev.type_code);
+      if (match) {
+        drawRoute(ev.latitude, ev.longitude, match.shelter, c, match.distance);
+      }
     });
 
     // Daca locatia e activa, redesenam si ruta utilizatorului pe routeLayer

@@ -1,6 +1,6 @@
 <?php
- // Container harta + legenda + buton geolocatie + filtru tip calamitate
-//  Legenda cu toggle-uri, filtru pe tip calamitate, buton geolocatie
+// MapView.php - Container harta + legenda cu toggle-uri + filtru tip calamitate
+// Legenda: checkboxes pe layere, dropdown filtru, legenda culori, buton geolocatie
 function display_map_page() {
     echo '<div id="map-container"></div>';
     echo '<div style="margin-top:10px;display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">';

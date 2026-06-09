@@ -1,6 +1,6 @@
 // alerts-public.js - Afisare alerte CAP pe pagina publica
-// Alert/ Cancel, mesaj "Pericolul a trecut" pt cele anulate
-//  updated daca criza a fost editata
+// Filtreaza pe Alert/Cancel, mesaj "Pericolul a trecut" pt cele anulate
+// Badge "updated" daca criza a fost editata
 document.addEventListener('DOMContentLoaded', function() {
     loadAlerts();
     var filterSelect = document.getElementById('filter-type');
@@ -31,12 +31,12 @@ function loadAlerts(msgType) {
             return;
         }
 
-            // Numaram cate alerte avem de fiecare tip pt statistica de sus
-    var stats = { Alert: 0, Cancel: 0, updated: 0 };
+        // Numaram cate alerte avem de fiecare tip pt statistica de sus
+        var stats = { Alert: 0, Cancel: 0, updated: 0 };
         resp.data.forEach(function(alert) {
             stats[alert.msg_type] = (stats[alert.msg_type] || 0) + 1;
-                // Badge "updated" daca criza a fost editata de cel putin o data
-    if ((alert.edit_count || 0) > 0) stats.updated++;
+            // Badge "updated" daca criza a fost editata de cel putin o data
+            if ((alert.edit_count || 0) > 0) stats.updated++;
             container.appendChild(createAlertCard(alert));
         });
 
@@ -78,7 +78,7 @@ function createAlertCard(alert) {
     badge.textContent = alert.msg_type || 'Alert';
     badgeWrap.appendChild(badge);
 
-        // Badge "updated" daca criza a fost editata de cel putin o data
+    // Badge "updated" daca criza a fost editata de cel putin o data
     if ((alert.edit_count || 0) > 0 && alert.msg_type !== 'Cancel') {
         var updBadge = document.createElement('span');
         updBadge.style.cssText = 'background:#17a2b8;color:#fff;font-size:.7rem;padding:2px 8px;border-radius:3px';
@@ -88,8 +88,7 @@ function createAlertCard(alert) {
     header.appendChild(badgeWrap);
     card.appendChild(header);
 
-    // Mesaj "Pericolul a trecut" pentru alerte anulate
-        // Mesaj verde "Pericolul a trecut" pt alertele anulate
+    // Mesaj verde "Pericolul a trecut" pt alertele anulate
     if (alert.msg_type === 'Cancel') {
         var dangerMsg = document.createElement('div');
         dangerMsg.style.cssText = 'background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:10px 14px;border-radius:4px;margin:10px 0;font-weight:600;text-align:center';

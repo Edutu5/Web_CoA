@@ -1,9 +1,7 @@
 <?php
 // dashboard.php - Panoul de control pt authority si admin
-// De aici se declara crize noi, se editeaza, se anuleaza sau se reactiveaza
-// Formular de criza sus, lista de crize jos
-// dashboard.php - Panoul de control pt authority si admin
 // De aici se declara, editeaza, anuleaza sau reactiveaza crize
+// Statistici live (fara reload), formular de criza sus, lista jos
 session_start();
 require_once __DIR__ . '/controllers/AuthController.php';
 auth_require('authority');

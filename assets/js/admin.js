@@ -2,10 +2,17 @@
 // Adaposturi, utilizatori, alerte - toate cu modale si Ajax
 var CURRENT_USER_ID = parseInt(document.body.getAttribute("data-user-id") || "0", 10);
 
+// Initializare tab-uri + incarcare date la pornirea paginii
 document.addEventListener("DOMContentLoaded", function() {
   var tabs = document.querySelectorAll(".tab-btn");
-  tabs.forEach(function(t) {
+  // Tab switching: inchide modale/formulare deschise, afiseaza continutul tabului ales
+  tabs.forEach(function (t) {
     t.addEventListener("click", function() {
+      closeModal();
+      var sf = document.getElementById("shelter-form-container");
+      if (sf) { sf.classList.add("hidden"); sf.innerHTML = ""; }
+      var uf = document.getElementById("user-form-container");
+      if (uf) { uf.classList.add("hidden"); uf.innerHTML = ""; }
       tabs.forEach(function(btn) { btn.classList.remove("active"); });
       t.classList.add("active");
       document.querySelectorAll(".tab-content").forEach(function(tc) { tc.classList.add("hidden"); });
@@ -24,6 +31,7 @@ function openModal(content) {
   else { mc.appendChild(content); }
   document.getElementById("modal-overlay").classList.remove("hidden");
 }
+// Inchide modalul de confirmare
 function closeModal() { document.getElementById("modal-overlay").classList.add("hidden"); }
 
 // Creeaza un camp de formular cu label + input (DOM elements)
@@ -42,12 +50,14 @@ function makeFormGroup(labelText, inputId, inputType, value) {
   return group;
 }
 
+// Creeaza o celula de tabel cu text
 function makeCell(text) {
   var td = document.createElement("td");
   td.textContent = text || "";
   return td;
 }
 
+// Creeaza un buton cu text, clasa si handler de click
 function makeBtn(text, className, onClick) {
   var btn = document.createElement("button");
   btn.className = className || "btn btn-sm";
@@ -57,11 +67,18 @@ function makeBtn(text, className, onClick) {
 }
 
 // ====== ADAPOSTURI ======
+// Afiseaza tabela cu adaposturi + buton de adaugat
 function loadShelters() {
   apiGet("api/shelters.php").then(function(data) {
     var c = document.getElementById("shelters-admin");
     if (!c) return;
     c.innerHTML = "";
+
+    var formContainer = document.createElement("div");
+    formContainer.id = "shelter-form-container";
+    formContainer.className = "hidden";
+    formContainer.style.cssText = "background:var(--color-surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:1rem;border:1px solid var(--color-info)";
+    c.appendChild(formContainer);
 
     var addBtn = makeBtn("Adaugă Adăpost", "btn btn-primary", function() { showShelterForm(); });
     c.appendChild(addBtn);
@@ -91,19 +108,21 @@ function loadShelters() {
   });
 }
 
+// Afiseaza formular inline de editare/adaugare adapost
 function showShelterForm(shelter) {
   var s = shelter || {};
   var isEdit = !!s.id;
-  var frag = document.createElement("div");
+  var container = document.getElementById("shelter-form-container");
+  container.innerHTML = "";
 
   var title = document.createElement("h3");
   title.textContent = isEdit ? "Editare Adăpost #" + s.id : "Adaugă Adăpost";
-  frag.appendChild(title);
+  container.appendChild(title);
 
-  frag.appendChild(makeFormGroup("Nume", "sf-name", "text", s.name || ""));
-  frag.appendChild(makeFormGroup("Adresa", "sf-address", "text", s.address || ""));
-  frag.appendChild(makeFormGroup("Latitudine", "sf-lat", "number", s.latitude || ""));
-  frag.appendChild(makeFormGroup("Longitudine", "sf-lng", "number", s.longitude || ""));
+  container.appendChild(makeFormGroup("Nume", "sf-name", "text", s.name || ""));
+  container.appendChild(makeFormGroup("Adresa", "sf-address", "text", s.address || ""));
+  container.appendChild(makeFormGroup("Latitudine", "sf-lat", "number", s.latitude || ""));
+  container.appendChild(makeFormGroup("Longitudine", "sf-lng", "number", s.longitude || ""));
 
   var typeGroup = document.createElement("div");
   typeGroup.className = "form-group";
@@ -120,22 +139,31 @@ function showShelterForm(shelter) {
   });
   if (s.disaster_type_id) typeSelect.value = s.disaster_type_id;
   typeGroup.appendChild(typeSelect);
-  frag.appendChild(typeGroup);
+  container.appendChild(typeGroup);
 
   var saveBtn = makeBtn("Salvează", "btn btn-primary", function() { saveShelter(s.id || 0); });
-  frag.appendChild(saveBtn);
-  frag.appendChild(document.createTextNode(" "));
-  frag.appendChild(makeBtn("Anulează", "btn", function() { closeModal(); }));
+  container.appendChild(saveBtn);
+  container.appendChild(document.createTextNode(" "));
+  container.appendChild(makeBtn("Anulează", "btn", function() { container.classList.add("hidden"); container.innerHTML = ""; }));
 
-  openModal(frag);
+  container.classList.remove("hidden");
+  container.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// Salveaza adapostul (POST pt nou, PUT pt editare) si re-incarca lista
 function saveShelter(id) {
   var d = { name: document.getElementById("sf-name").value, address: document.getElementById("sf-address").value, latitude: parseFloat(document.getElementById("sf-lat").value), longitude: parseFloat(document.getElementById("sf-lng").value), disaster_type_id: document.getElementById("sf-type").value || null };
   var p = id ? apiPut("api/shelters.php?id=" + id, d) : apiPost("api/shelters.php", d);
-  p.then(function(r) { if (r.success) { closeModal(); loadShelters(); } else { alert("Eroare: " + (r.error || "")); } });
+  p.then(function(r) {
+    if (r.success) {
+      var fc = document.getElementById("shelter-form-container");
+      if (fc) { fc.classList.add("hidden"); fc.innerHTML = ""; }
+      loadShelters();
+    } else { alert("Eroare: " + (r.error || "")); }
+  });
 }
 
+// Gaseste adapostul dupa ID si deschide formularul de editare
 function editShelter(id) {
   apiGet("api/shelters.php").then(function(data) {
     var s = (data.data || []).find(function(x) { return x.id == id; });
@@ -143,12 +171,14 @@ function editShelter(id) {
   });
 }
 
+// Sterge adapostul dupa confirmare
 function deleteShelter(id) {
   if (!confirm("Stergi acest adapost?")) return;
   apiDelete("api/shelters.php?id=" + id).then(function(r) { if (r.success) loadShelters(); });
 }
 
 // ====== CRIZE ======
+// Afiseaza toate evenimentele (active + resolved) in tabela
 function loadEvents() {
   apiGet("api/events.php").then(function(data) {
     var c = document.getElementById("events-admin");
@@ -184,22 +214,31 @@ function loadEvents() {
   });
 }
 
+// Anuleaza evenimentul (status -> resolved) si re-incarca lista + alerte
 function adminCancelEvent(id) {
   if (!confirm("Anuleaza acest eveniment?")) return;
   apiPut("api/events.php?id=" + id, {status: "resolved"}).then(function(r) { if (r.success) { loadEvents(); loadAlerts(); } });
 }
 
+// Sterge evenimentul definitiv dupa confirmare
 function adminDeleteEvent(id) {
   if (!confirm("Stergi definitiv?")) return;
   apiDelete("api/events.php?id=" + id).then(function(r) { if (r.success) { loadEvents(); loadAlerts(); } });
 }
 
 // ====== UTILIZATORI ======
+// Afiseaza tabela utilizatorilor cu butoane de edit rol / stergere
 function loadUsers() {
   apiGet("api/users.php").then(function(data) {
     var c = document.getElementById("users-admin");
     if (!c) return;
     c.innerHTML = "";
+
+    var formContainer = document.createElement("div");
+    formContainer.id = "user-form-container";
+    formContainer.className = "hidden";
+    formContainer.style.cssText = "background:var(--color-surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.5rem;margin-bottom:1rem;border:1px solid var(--color-info)";
+    c.appendChild(formContainer);
 
     var addBtn = makeBtn("Adaugă Utilizator", "btn btn-primary", function() { showUserForm(); });
     c.appendChild(addBtn);
@@ -236,13 +275,16 @@ function loadUsers() {
   });
 }
 
+// Afiseaza formular inline de creare utilizator (username, parola, rol)
 function showUserForm() {
-  var frag = document.createElement("div");
+  var container = document.getElementById("user-form-container");
+  container.innerHTML = "";
+
   var title = document.createElement("h3");
   title.textContent = "Adaugă Utilizator";
-  frag.appendChild(title);
+  container.appendChild(title);
 
-  frag.appendChild(makeFormGroup("Username", "uf-name", "text", ""));
+  container.appendChild(makeFormGroup("Username", "uf-name", "text", ""));
 
   var passGroup = document.createElement("div");
   passGroup.className = "form-group";
@@ -253,7 +295,7 @@ function showUserForm() {
   passInput.id = "uf-pass";
   passInput.type = "password";
   passGroup.appendChild(passInput);
-  frag.appendChild(passGroup);
+  container.appendChild(passGroup);
 
   var roleGroup = document.createElement("div");
   roleGroup.className = "form-group";
@@ -268,20 +310,29 @@ function showUserForm() {
     roleSelect.appendChild(opt);
   });
   roleGroup.appendChild(roleSelect);
-  frag.appendChild(roleGroup);
+  container.appendChild(roleGroup);
 
-  frag.appendChild(makeBtn("Salvează", "btn btn-primary", function() { saveUser(); }));
-  frag.appendChild(document.createTextNode(" "));
-  frag.appendChild(makeBtn("Anulează", "btn", function() { closeModal(); }));
+  container.appendChild(makeBtn("Salvează", "btn btn-primary", function() { saveUser(); }));
+  container.appendChild(document.createTextNode(" "));
+  container.appendChild(makeBtn("Anulează", "btn", function() { container.classList.add("hidden"); container.innerHTML = ""; }));
 
-  openModal(frag);
+  container.classList.remove("hidden");
+  container.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// Salveaza utilizatorul nou si re-incarca lista
 function saveUser() {
   var d = { username: document.getElementById("uf-name").value, password: document.getElementById("uf-pass").value, role: document.getElementById("uf-role").value };
-  apiPost("api/users.php", d).then(function(r) { if (r.success) { closeModal(); loadUsers(); } else { alert("Eroare: " + (r.error || "")); } });
+  apiPost("api/users.php", d).then(function(r) {
+    if (r.success) {
+      var fc = document.getElementById("user-form-container");
+      if (fc) { fc.classList.add("hidden"); fc.innerHTML = ""; }
+      loadUsers();
+    } else { alert("Eroare: " + (r.error || "")); }
+  });
 }
 
+// Inlocuieste butonul "Edit" cu un dropdown inline pt schimbarea rolului
 function editUser(id, currentRole, td) {
   while (td.firstChild) td.removeChild(td.firstChild);
   var sel = document.createElement("select");
@@ -300,12 +351,14 @@ function editUser(id, currentRole, td) {
   sel.focus();
 }
 
+// Sterge utilizatorul dupa confirmare (nu te poti sterge pe tine insuti)
 function deleteUser(id) {
   if (!confirm("Stergi acest utilizator?")) return;
   apiDelete("api/users.php?id=" + id).then(function(r) { if (r.success) loadUsers(); });
 }
 
 // ====== ALERTE ======
+// Afiseaza istoricul alertelor CAP trimise (Alert/Update/Cancel)
 function loadAlerts() {
   apiGet("api/alerts.php").then(function(data) {
     var c = document.getElementById("alerts-admin");
@@ -338,14 +391,17 @@ function loadAlerts() {
   });
 }
 
+// Sterge alerta si marcheaza evenimentul asociat ca rezolvat
 function deleteAlert(id) {
   if (!confirm("Stergi aceasta alerta? Evenimentul asociat va fi marcat ca rezolvat.")) return;
   apiDelete("api/alerts.php?id=" + id).then(function(r) { if (r.success) { loadAlerts(); loadEvents(); } });
 }
 
+// Deschide XML-ul alertei CAP intr-un tab nou
 function viewXml(id) { window.open("api/alert_xml.php?id=" + id, "_blank"); }
 
 // ====== EXPORT ======
+// Genereaza linkuri de download pt fiecare entitate + format (CSV/JSON/XML)
 (function() {
   var exportDiv = document.getElementById("export-section");
   if (exportDiv) {
@@ -375,6 +431,7 @@ function viewXml(id) { window.open("api/alert_xml.php?id=" + id, "_blank"); }
 })();
 
 // ====== IMPORT ======
+// Upload fisier CSV/JSON pt entitatea selectata
 function doImport() {
   var entity = document.getElementById("import-entity").value;
   var format = document.getElementById("import-format").value;
