@@ -1,4 +1,5 @@
 <?php
+// Se deschide intr-un tab nou cand dai click pe butonul "XML"
 session_start();
 require_once __DIR__ . '/../controllers/AlertsController.php';
 $id = (int)($_GET['id'] ?? 0);

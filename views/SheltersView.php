@@ -1,4 +1,6 @@
 <?php
+// SheltersView.php - Afisare adaposturi in grid responsive
+
 function display_shelters($shelters) {
     if (!empty($shelters)) {
         echo '<div class="shelter-grid">';

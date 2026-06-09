@@ -1,6 +1,11 @@
 <?php
+// EarthquakesModel.php - Acces la datele seismice importate din Kaggle
+// Datele se importa o singura data cu scripts/import_earthquakes.php
+// EarthquakesModel.php - Date seismice importate din Kaggle
+// Se importa o singura data cu scripts/import_earthquakes.php
 require_once __DIR__ . '/../config/db.php';
 
+// Returneaza si totalul pt paginare in frontend
 function earthquakes_get_all($country = null, $min_magnitude = null, $limit = 100, $offset = 0) {
     global $mysql;
     $sql = "SELECT id, country, latitude, longitude, magnitude, depth, occurred_at FROM earthquakes WHERE 1=1";
@@ -23,4 +28,14 @@ function earthquakes_get_all($country = null, $min_magnitude = null, $limit = 10
     $cstmt->execute();
     $total = $cstmt->get_result()->fetch_assoc()['total'];
     return ['data' => $data, 'total' => (int)$total, 'page' => (int)($offset / $limit) + 1, 'per_page' => (int)$limit];
+}
+
+// Inserare un cutremur individual - folosit de import
+
+function earthquake_insert($country, $lat, $lng, $magnitude, $depth, $occurred_at) {
+    global $mysql;
+    $stmt = $mysql->prepare("INSERT INTO earthquakes (country, latitude, longitude, magnitude, depth, occurred_at) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sdddds", $country, $lat, $lng, $magnitude, $depth, $occurred_at);
+    $stmt->execute();
+    return $stmt->insert_id;
 }

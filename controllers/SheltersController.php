@@ -1,13 +1,17 @@
 <?php
-/* SheltersController.php — Logica CRUD pentru adaposturi */
+//CRUD adaposturi (doar admin poate modifica)
+// GET e public - oricine poate vedea adaposturile disponibile
+
 require_once __DIR__ . '/../models/SheltersModel.php';
 require_once __DIR__ . '/AuthController.php';
 
+// Returneaza adaposturile ca JSON uniform {data, total}
 function shelters_show_json($type_id = null) {
     $shelters = shelters_get_all($type_id);
     return json_encode(['data' => $shelters, 'total' => count($shelters)]);
 }
 
+// Creare adapost - validam ca avem cel putin name + coordonate
 function shelters_create_action($data) {
     auth_require('admin');
     if (empty($data['name']) || !isset($data['latitude']) || !isset($data['longitude'])) {

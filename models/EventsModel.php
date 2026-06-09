@@ -1,6 +1,12 @@
 <?php
+// EventsModel.php - Functii CRUD pt tabela events (crize)
+// JOIN cu disaster_types pt a afisa si tipul crizei (cutremur/incendiu/inundatie)
+// JOIN cu users pt a afisa cine a declarat criza
+// EventsModel.php - Functii CRUD pt crize (tabela events)
+// Folosim JOIN cu disaster_types pt a afisa si tipul crizei
 require_once __DIR__ . '/../config/db.php';
 
+// Returneaza evenimente cu filtrare optionala pe status si tip
 function events_get_all($status = null, $type_code = null) {
     global $mysql;
     $sql = "SELECT e.*, dt.code as type_code, dt.name as type_name, u.username as creator_name
@@ -19,6 +25,7 @@ function events_get_all($status = null, $type_code = null) {
     return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
+// Un singur eveniment dupa ID - include type_code pt generarea CAP
 function events_get_by_id($id){
     global $mysql;
     $stmt = $mysql->prepare("SELECT e.*, dt.code as type_code, dt.name as type_name FROM events e JOIN disaster_types dt ON e.type_id = dt.id WHERE e.id = ?");
@@ -27,6 +34,7 @@ function events_get_by_id($id){
     return $stmt->get_result()->fetch_assoc();
 }
 
+// Creaza eveniment nou - returneaza insert_id pt legatura cu alerta CAP
 function events_create($type_id, $title, $description, $lat, $lng, $severity, $urgency, $user_id) {
     global $mysql;
     $stmt = $mysql->prepare("INSERT INTO events (type_id, title, description, latitude, longitude, severity, urgency, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -35,14 +43,18 @@ function events_create($type_id, $title, $description, $lat, $lng, $severity, $u
     return $stmt->insert_id;
 }
 
+// Actualizeaza un eveniment - increment_edit numara cate editari s-au facut
+// edit_count se foloseste pt badge-ul "edited" pe cardurile de alerte
 function events_update($id, $type_id, $title, $description, $lat, $lng, $severity, $urgency, $status, $increment_edit = false) {
     global $mysql;
+    // Daca trebuie incrementat edit_count, construim SQL-ul dinamic
     $edit_sql = $increment_edit ? ", edit_count = edit_count + 1" : "";
     $sql = "UPDATE events SET type_id=?, title=?, description=?, latitude=?, longitude=?, severity=?, urgency=?, status=?{$edit_sql} WHERE id=?";
     $stmt = $mysql->prepare($sql);
     $stmt->bind_param("issdssssi", $type_id, $title, $description, $lat, $lng, $severity, $urgency, $status, $id);
     return $stmt->execute();
 }
+// Sterge eveniment + alertele asociate
 function events_delete($id) {
     global $mysql;
     $stmt = $mysql->prepare("DELETE FROM events WHERE id = ?");
@@ -50,6 +62,7 @@ function events_delete($id) {
     return $stmt->execute();
 }
 
+// Verificam ca tipul de calamitate exista in DB inainte sa cream un event
 function disaster_type_exists($id) {
     global $mysql;
     $stmt = $mysql->prepare("SELECT id FROM disaster_types WHERE id = ?");
@@ -58,6 +71,7 @@ function disaster_type_exists($id) {
     return $stmt->get_result()->fetch_assoc() !== null;
 }
 
+// Sugereaza o severitate default pe baza tipului (cutremur=high, rest=medium)
 function suggested_severity($type_code){
     $map = [
         'EQ' => 'high',

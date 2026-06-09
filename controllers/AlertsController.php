@@ -1,4 +1,6 @@
 <?php
+//  Formatare si servire alerte CAP ca JSON
+// Suporta filtrare pe event_id si msg_type (Alert/Cancel)
 require_once __DIR__ . '/../models/AlertsModel.php';
 require_once __DIR__ . '/../models/EventsModel.php';
 require_once __DIR__ . '/../models/CAPGenerator.php';

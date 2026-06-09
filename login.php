@@ -1,4 +1,9 @@
 <?php
+// login.php - Formular de autentificare cu sesiuni PHP
+// Cookie httponly + samesite=Strict pt securitate
+// Redirect automat dupa login: admin->admin.php, authority->dashboard, user->index
+// login.php - Formular de autentificare
+// Dupa login reusit, redirect pe baza rolului (user->index, authority->dashboard, admin->admin)
 session_set_cookie_params(['httponly' => true, 'samesite' => 'Strict']);
 session_start();
 
@@ -38,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="form-group"><label for="password">Parol&#259;</label><input type="password" id="password" name="password" required autocomplete="current-password"></div>
       <button type="submit" class="btn btn-primary btn-block">Autentificare</button>
     </form>
-    <p class="login-hint">Conturi demo: <code>admin</code>/<code>admin123</code>, <code>authority</code>/<code>admin123</code>, <code>user</code>/<code>admin123</code></p>
     <p class="login-hint">Nu ai cont? <a href="signup.php">Înregistrează-te</a></p>
   </div>
 </main>

@@ -1,4 +1,9 @@
 <?php
+// api/events.php - Endpoint REST pt crize
+// GET=public, POST=authority+, PUT=authority+, DELETE=admin
+// Rutarea se face pe REQUEST_METHOD (switch/case)
+// api/events.php - REST endpoint pt crize
+// GET=public, POST=authority+, PUT=authority+, DELETE=admin only
 session_start();
 require_once __DIR__ . '/../controllers/EventsController.php';
 header('Content-Type: application/json');

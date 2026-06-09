@@ -1,5 +1,6 @@
 <?php
-/* EventsView.php — Afisarea listei de evenimente si formularul de criza */
+
+// EventsView.php — Afisarea listei de evenimente si formularul de criza
 
 function display_events($events, $editable = false) {
     if (!empty($events)) {

@@ -1,4 +1,10 @@
 <?php
+// import_earthquakes.php - Import date cutremure din CSV-urile Kaggle
+// Se ruleaza din terminal: php scripts/import_earthquakes.php
+// Detecteaza automat coloanele si importa in batch-uri de 1000 (performanta)
+// import_earthquakes.php - Import date Kaggle in tabela earthquakes
+// Se ruleaza din CLI: php scripts/import_earthquakes.php
+// Detecteaza automat coloanele si importa in batch-uri de 1000
 require_once __DIR__ . '/../config/db.php';
 
 function import_csv($filepath, $country_override = null) {

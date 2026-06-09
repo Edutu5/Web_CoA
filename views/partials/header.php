@@ -1,4 +1,9 @@
 <?php
+// header.php - Template comun inclus in toate paginile
+// Genereaza: DOCTYPE, head cu CSS, navbar adaptiv pe rol
+// User nu vede Dashboard, doar admin vede tab-ul Admin
+// header.php - Template comun pt toate paginile (navbar + head)
+// Navbar-ul se adapteaza pe rol: user nu vede Dashboard, doar admin vede Admin
 if (session_status() === PHP_SESSION_NONE) session_start();
 ?><!DOCTYPE html>
 <html lang="ro">
@@ -6,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= htmlspecialchars($page_title ?? 'CoA', ENT_QUOTES, 'UTF-8') ?> - CoA</title>
-<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
 <?= $extra_head ?? '' ?>
 </head>
 <body<?php if (isset($body_class)) echo ' class="' . htmlspecialchars($body_class, ENT_QUOTES, 'UTF-8') . '"'; ?><?php if (isset($_SESSION['user_id'])) echo ' data-user-id="' . (int)$_SESSION['user_id'] . '"'; ?>>

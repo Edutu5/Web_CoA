@@ -1,4 +1,5 @@
 <?php
+   // Folosit pt dropdown-ul de filtrare pe harta si in formulare
 
 session_start();
 require_once __DIR__ . '/../config/db.php';

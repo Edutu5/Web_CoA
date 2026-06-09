@@ -1,3 +1,6 @@
+// alerts-public.js - Afisare alerte CAP pe pagina publica
+// Alert/ Cancel, mesaj "Pericolul a trecut" pt cele anulate
+//  updated daca criza a fost editata
 document.addEventListener('DOMContentLoaded', function() {
     loadAlerts();
     var filterSelect = document.getElementById('filter-type');
@@ -6,11 +9,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Incarcam alertele de la API si le afisam ca carduri
+// Daca avem filtru activ, trimitem msg_type ca parametru
 function loadAlerts(msgType) {
     var url = 'api/alerts.php';
     if (msgType) url += '?msg_type=' + encodeURIComponent(msgType);
     var container = document.getElementById('alerts-list');
-    container.innerHTML = '<p class="loading">Se incarca...</p>';
+    container.textContent = '';
+    var loadingP = document.createElement('p');
+    loadingP.className = 'loading';
+    loadingP.textContent = 'Se incarca...';
+    container.appendChild(loadingP);
 
     apiGet(url).then(function(resp) {
         container.innerHTML = '';
@@ -22,10 +31,12 @@ function loadAlerts(msgType) {
             return;
         }
 
-        var stats = { Alert: 0, Cancel: 0, updated: 0 };
+            // Numaram cate alerte avem de fiecare tip pt statistica de sus
+    var stats = { Alert: 0, Cancel: 0, updated: 0 };
         resp.data.forEach(function(alert) {
             stats[alert.msg_type] = (stats[alert.msg_type] || 0) + 1;
-            if ((alert.edit_count || 0) > 0) stats.updated++;
+                // Badge "updated" daca criza a fost editata de cel putin o data
+    if ((alert.edit_count || 0) > 0) stats.updated++;
             container.appendChild(createAlertCard(alert));
         });
 
@@ -44,8 +55,12 @@ function loadAlerts(msgType) {
 
 function createAlertCard(alert) {
     var card = document.createElement('article');
+    // Stiluri inline ca fallback - nu depindem doar de CSS extern
+    var borderColor = '#6c757d';
+    if (alert.msg_type === 'Alert') borderColor = '#dc3545';
+    if (alert.msg_type === 'Cancel') borderColor = '#28a745';
+    card.style.cssText = 'background:#fff;border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:1.2rem;box-shadow:0 2px 8px rgba(0,0,0,.12);border:1px solid #dee2e6;border-left:5px solid ' + borderColor;
     card.className = 'alert-card alert-' + (alert.msg_type || 'Alert').toLowerCase();
-    card.style.position = 'relative';
     var icons = { EQ: '🟠', FIRE: '🔴', FLOOD: '🔵' };
     var icon = icons[alert.type_code] || '⚠️';
 
@@ -63,6 +78,7 @@ function createAlertCard(alert) {
     badge.textContent = alert.msg_type || 'Alert';
     badgeWrap.appendChild(badge);
 
+        // Badge "updated" daca criza a fost editata de cel putin o data
     if ((alert.edit_count || 0) > 0 && alert.msg_type !== 'Cancel') {
         var updBadge = document.createElement('span');
         updBadge.style.cssText = 'background:#17a2b8;color:#fff;font-size:.7rem;padding:2px 8px;border-radius:3px';
@@ -73,6 +89,7 @@ function createAlertCard(alert) {
     card.appendChild(header);
 
     // Mesaj "Pericolul a trecut" pentru alerte anulate
+        // Mesaj verde "Pericolul a trecut" pt alertele anulate
     if (alert.msg_type === 'Cancel') {
         var dangerMsg = document.createElement('div');
         dangerMsg.style.cssText = 'background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:10px 14px;border-radius:4px;margin:10px 0;font-weight:600;text-align:center';

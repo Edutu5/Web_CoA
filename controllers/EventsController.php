@@ -1,5 +1,7 @@
 <?php
-/* EventsController.php — Logica CRUD pentru evenimente/crize */
+// Cea mai complexa logica din aplicatie
+// Gestioneaza ciclul complet al unei crize: creare -> editare -> anulare -> reactivare
+// La fiecare operatie se actualizeaza automat si alerta CAP asociata
 require_once __DIR__ . '/../models/EventsModel.php';
 require_once __DIR__ . '/../models/AlertsModel.php';
 require_once __DIR__ . '/../models/CAPGenerator.php';
@@ -28,6 +30,8 @@ function events_create_action($data) {
         if ($lat < -90 || $lat > 90) $errors[] = 'Latitudinea trebuie sa fie intre -90 si 90';
         if ($lng < -180 || $lng > 180) $errors[] = 'Longitudinea trebuie sa fie intre -180 si 180';
     }
+        // Warning pt coordonate in afara Romaniei - nu blocam, doar avertizam
+    // Limitele aproximative ale Romaniei: lat 43.6-48.3, lng 20.2-29.7
     $warnings = [];
     if (empty($errors) && ($lat < 43.6 || $lat > 48.3 || $lng < 20.2 || $lng > 29.7)) {
         $warnings[] = 'Coordonatele par a fi in afara Romaniei.';
@@ -62,6 +66,10 @@ function events_update_action($id, $data) {
     $new_urgency = $data['urgency'] ?? $existing['urgency'] ?? 'Immediate';
     $new_desc = $data['description'] ?? $existing['description'];
 
+        // Determinam ce tip de operatie e:
+    // 1. Anulare: status devine resolved (autoritatea a decis ca pericolul a trecut)
+    // 2. Reactivare: criza era anulata dar urgency se schimba din Past (pericolul a revenit)
+    // 3. Editare simpla: orice altceva (modificare titlu, descriere, coordonate, etc)
     $is_cancel = ($new_status === 'resolved' && $existing['status'] === 'active');
     $is_reactivate = ($existing['status'] === 'resolved' && $new_urgency !== 'Past');
     $is_edit = !$is_cancel && !$is_reactivate;
@@ -89,6 +97,8 @@ function events_update_action($id, $data) {
     );
 
     $event_data = events_get_by_id($id);
+        // Verificam daca exista deja o alerta pt acest eveniment
+    // Daca da, o updatam (nu cream duplicat). Daca a fost stearsa, o recreem.
     $existing_alert = alerts_get_by_event_id($id);
 
     if ($is_cancel) {

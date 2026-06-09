@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 550" font-family="Arial, sans-serif">
+  <style>
+    .title { font-size: 18px; font-weight: bold; fill: #333; }
+    .subtitle { font-size: 11px; fill: #666; }
+    .box-label { font-size: 13px; font-weight: bold; fill: #fff; }
+    .box-desc { font-size: 10px; fill: rgba(255,255,255,.85); }
+    .actor-label { font-size: 12px; font-weight: bold; fill: #333; }
+    .actor-desc { font-size: 9px; fill: #666; }
+    .arrow-label { font-size: 9px; fill: #555; }
+  </style>
+  <text x="400" y="30" text-anchor="middle" class="title">C4 Level 1 — System Context: CoA</text>
+  <text x="400" y="48" text-anchor="middle" class="subtitle">Crisis Containment Service — Diagrama de context</text>
+
+  <!-- Actors -->
+  <g transform="translate(60,100)">
+    <circle cx="30" cy="15" r="15" fill="#08427b"/>
+    <rect x="5" y="35" width="50" height="3" rx="2" fill="#08427b"/>
+    <text x="30" y="58" text-anchor="middle" class="actor-label">Cetatean</text>
+    <text x="30" y="70" text-anchor="middle" class="actor-desc">Vizualizeaza harta,</text>
+    <text x="30" y="80" text-anchor="middle" class="actor-desc">alerte, adaposturi</text>
+  </g>
+  <g transform="translate(60,260)">
+    <circle cx="30" cy="15" r="15" fill="#08427b"/>
+    <rect x="5" y="35" width="50" height="3" rx="2" fill="#08427b"/>
+    <text x="30" y="58" text-anchor="middle" class="actor-label">Autoritate</text>
+    <text x="30" y="70" text-anchor="middle" class="actor-desc">Declara crize,</text>
+    <text x="30" y="80" text-anchor="middle" class="actor-desc">genereaza alerte CAP</text>
+  </g>
+  <g transform="translate(60,420)">
+    <circle cx="30" cy="15" r="15" fill="#08427b"/>
+    <rect x="5" y="35" width="50" height="3" rx="2" fill="#08427b"/>
+    <text x="30" y="58" text-anchor="middle" class="actor-label">Admin</text>
+    <text x="30" y="70" text-anchor="middle" class="actor-desc">CRUD complet,</text>
+    <text x="30" y="80" text-anchor="middle" class="actor-desc">import/export</text>
+  </g>
+
+  <!-- Central System -->
+  <rect x="270" y="200" width="260" height="120" rx="8" fill="#1168bd"/>
+  <text x="400" y="240" text-anchor="middle" class="box-label">CoA</text>
+  <text x="400" y="258" text-anchor="middle" class="box-desc">Crisis Containment Service</text>
+  <text x="400" y="273" text-anchor="middle" class="box-desc">PHP + MariaDB + Leaflet.js</text>
+  <text x="400" y="288" text-anchor="middle" class="box-desc">Gestionare urgente, alerte CAP</text>
+
+  <!-- External Systems -->
+  <rect x="610" y="90" width="160" height="70" rx="6" fill="#999"/>
+  <text x="690" y="120" text-anchor="middle" class="box-label" style="font-size:11px">Kaggle Datasets</text>
+  <text x="690" y="138" text-anchor="middle" class="box-desc">Date seismice statice</text>
+
+  <rect x="610" y="240" width="160" height="70" rx="6" fill="#999"/>
+  <text x="690" y="270" text-anchor="middle" class="box-label" style="font-size:11px">OpenStreetMap</text>
+  <text x="690" y="288" text-anchor="middle" class="box-desc">Tile-uri harta</text>
+
+  <rect x="610" y="390" width="160" height="70" rx="6" fill="#999"/>
+  <text x="690" y="420" text-anchor="middle" class="box-label" style="font-size:11px">OSRM</text>
+  <text x="690" y="438" text-anchor="middle" class="box-desc">Rutare drumuri reale</text>
+
+  <!-- Arrows -->
+  <line x1="120" y1="140" x2="270" y2="230" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="120" y1="300" x2="270" y2="270" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="120" y1="460" x2="270" y2="300" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="530" y1="230" x2="610" y2="130" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="530" y1="260" x2="610" y2="270" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="530" y1="300" x2="610" y2="420" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <text x="200" y="175" class="arrow-label">HTTP/Ajax</text>
+  <text x="200" y="280" class="arrow-label">HTTP/Ajax</text>
+  <text x="200" y="380" class="arrow-label">HTTP/Ajax</text>
+  <text x="560" y="170" class="arrow-label">CSV import</text>
+  <text x="560" y="258" class="arrow-label">Tile requests</text>
+  <text x="560" y="365" class="arrow-label">Route API</text>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+</svg>

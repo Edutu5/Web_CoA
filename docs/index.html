@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoA — Crisis Containment Service: Raport Tehnic</title>
+  <style>
+    body { font-family: Georgia, "Times New Roman", serif; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.7; color: #222; background: #fdfdfd; }
+    h1 { font-size: 1.8rem; text-align: center; margin-bottom: 0.3rem; }
+    h2 { font-size: 1.35rem; border-bottom: 2px solid #17a2b8; padding-bottom: 0.3rem; margin-top: 2.5rem; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+    a { color: #17a2b8; }
+    code { background: #f0f0f0; padding: 2px 5px; border-radius: 3px; font-size: 0.9em; }
+    pre { background: #f4f4f4; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.85em; line-height: 1.5; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { border: 1px solid #ddd; padding: 0.5rem 0.75rem; text-align: left; font-size: 0.9rem; }
+    th { background: #f8f9fa; }
+    figure { margin: 1.5rem 0; text-align: center; }
+    figure img { max-width: 100%; border: 1px solid #ddd; border-radius: 4px; }
+    figcaption { font-size: 0.85rem; color: #666; margin-top: 0.5rem; }
+    .authors { text-align: center; color: #555; margin-bottom: 2rem; }
+    .authors p { margin: 0.2rem 0; }
+    .subtitle-line { text-align: center; font-size: 1rem; color: #666; }
+    .abstract { background: #f8f9fa; padding: 1rem 1.5rem; border-left: 4px solid #17a2b8; border-radius: 4px; margin: 1.5rem 0; }
+    .doc-footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #ddd; font-size: 0.85rem; color: #666; text-align: center; }
+    section { margin-bottom: 2rem; }
+    ul, ol { padding-left: 1.5rem; }
+    li { margin-bottom: 0.3rem; }
+    .ref-list { font-size: 0.9rem; }
+    .ref-list li { margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body>
+<article typeof="schema:ScholarlyArticle">
+  <header>
+    <h1 property="schema:name">CoA — Crisis Containment Service</h1>
+    <p class="subtitle-line">Raport tehnic conform IEEE System Requirements Specification</p>
+    <div class="authors">
+      <p><strong>Autori:</strong> Dorcu Eduard-Daniel, Motfai Eduard Constantin </p>
+      <p>Facultatea de Informatica, Universitatea Alexandru Ioan Cuza, Iasi</p>
+      <p>Disciplina: Tehnologii Web, 2026</p>
+    </div>
+  </header>
+
+  <div class="abstract">
+    <strong>Rezumat.</strong>
+    CoA (Crisis Containment Service) este o platforma Web destinata gestionarii situatiilor de urgenta
+    (cutremure, incendii, inundatii) de catre autoritati. Aplicatia ofera vizualizare cartografica
+    a datelor publice despre cutremure, declararea crizelor cu generare automata de alerte conform
+    standardului Common Alerting Protocol v1.2 (OASIS), informatii despre adaposturi si rute de evacuare
+    filtrate pe tip de calamitate, si un modul complet de administrare cu 3 roluri ierarhice.
+    Implementarea foloseste PHP fara framework, MariaDB, Vanilla JavaScript si Leaflet.js.
+  </div>
+
+  <!-- ====== SECTIUNEA 1: INTRODUCERE ====== -->
+  <section id="introducere">
+    <h2>1. Introducere</h2>
+
+    <h3>1.1 Scop</h3>
+    <p>
+      Acest document specifica cerintele functionale si nefunctionale ale platformei Web CoA,
+      dezvoltata in cadrul disciplinei Tehnologii Web. Aplicatia permite autoritatilor sa declare
+      si sa gestioneze situatii de urgenta, iar cetatenilor sa vizualizeze informatii despre
+      evenimentele active, adaposturile disponibile si rutele de evacuare.
+    </p>
+
+    <h3>1.2 Sfera de aplicare</h3>
+    <p>
+      Platforma acopera trei scenarii principale de calamitate: cutremure (EQ), incendii (FIRE)
+      si inundatii (FLOOD). Sistemul integreaza date publice despre cutremure din doua surse Kaggle
+      (<a href="https://www.kaggle.com/datasets/zahranusratt/global-earthquake-events-dataset">Global Earthquake Events</a>
+      si <a href="https://www.kaggle.com/datasets/stefancomanita/earthquakes-in-romania-from-2012-to-2024">Earthquakes in Romania</a>),
+      genereaza alerte conforme cu
+      <a href="http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.html">Common Alerting Protocol v1.2 (OASIS)</a>,
+      si ofera vizualizare cartografica prin <a href="https://leafletjs.com/">Leaflet.js</a> cu
+      <a href="https://www.openstreetmap.org/">OpenStreetMap</a>.
+    </p>
+
+    <h3>1.3 Referinte</h3>
+    <ul class="ref-list">
+      <li>OASIS, <em>Common Alerting Protocol Version 1.2</em>, 01 July 2010 — <a href="http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.html">CAP-v1.2-os.html</a></li>
+      <li>W3C, <em>Scholarly HTML</em> — <a href="https://w3c.github.io/scholarly-html/">w3c.github.io/scholarly-html</a></li>
+      <li>IEEE, <em>System Requirements Specification Template</em> — <a href="https://github.com/rick4470/IEEE-SRS-Tempate">IEEE-SRS-Template</a></li>
+      <li>OWASP, <em>SQL Injection</em> — <a href="https://owasp.org/www-community/attacks/SQL_Injection">owasp.org</a></li>
+      <li>OWASP, <em>Cross Site Scripting (XSS)</em> — <a href="https://owasp.org/www-community/attacks/xss/">owasp.org</a></li>
+    </ul>
+  </section>
+
+  <!-- ====== SECTIUNEA 2: DESCRIERE GENERALA ====== -->
+  <section id="descriere-generala">
+    <h2>2. Descriere generala</h2>
+
+    <h3>2.1 Perspectiva produsului</h3>
+    <p>
+      CoA este o aplicatie Web autonoma care ruleaza pe un server Apache cu PHP si MariaDB.
+      Nu depinde de framework-uri externe (nici pe server, nici pe client). Arhitectura este
+      bazata pe servicii Web REST, cu interfata de client construita in HTML5, CSS3 si Vanilla JavaScript.
+    </p>
+
+    <h3>2.2 Tipuri de utilizatori</h3>
+    <table>
+      <thead>
+        <tr><th>Rol</th><th>Descriere</th><th>Permisiuni</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>user</code> (cetatean)</td>
+          <td>Utilizator public, eventual inregistrat</td>
+          <td>Vizualizare harta, evenimente active, adaposturi, rute de evacuare, alerte publice CAP (read-only)</td>
+        </tr>
+        <tr>
+          <td><code>authority</code> (autoritate)</td>
+          <td>Reprezentant al autoritatilor competente</td>
+          <td>Toate permisiunile de user, plus declararea crizelor noi cu generare automata de notificari CAP, editarea si anularea crizelor existente</td>
+        </tr>
+        <tr>
+          <td><code>admin</code> (administrator)</td>
+          <td>Administratorul platformei</td>
+          <td>Toate permisiunile de authority, plus CRUD complet pe adaposturi, utilizatori si alerte; import si export date in formatele CSV, JSON si XML CAP</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>2.3 Constrangeri de implementare</h3>
+    <ul>
+      <li>PHP fara framework (cerinta profesorului)</li>
+      <li>Fara framework-uri JavaScript pe client (Vanilla JS)</li>
+      <li>Arhitectura obligatoriu bazata pe servicii Web REST, cu apeluri asincrone Ajax</li>
+      <li>HTML valid W3C si CSS valid (verificare cu Stylelint)</li>
+      <li>Prevenirea SQL Injection si Cross Site Scripting</li>
+      <li>Design Web responsiv</li>
+    </ul>
+  </section>
+
+  <!-- ====== SECTIUNEA 3: SURSE DE DATE ====== -->
+  <section id="surse-date">
+    <h2>3. Surse de date</h2>
+
+    <h3>3.1 Date seismice statice (Kaggle)</h3>
+    <p>
+      Datele despre cutremure sunt importate o singura data in baza de date prin scriptul CLI
+      <code>scripts/import_earthquakes.php</code>. Importul detecteaza automat coloanele din CSV,
+      proceseaza in tranzactii batch de 1000 de randuri si marcheaza cutremurele din Romania
+      cu <code>country = 'RO'</code>.
+    </p>
+    <table>
+      <thead><tr><th>Dataset</th><th>Sursa</th><th>Continut</th></tr></thead>
+      <tbody>
+        <tr><td>Global Earthquake Events</td><td><a href="https://www.kaggle.com/datasets/zahranusratt/global-earthquake-events-dataset">Kaggle</a></td><td>Cutremure la nivel mondial: coordonate, magnitudine, adancime, data</td></tr>
+        <tr><td>Earthquakes in Romania 2012–2024</td><td><a href="https://www.kaggle.com/datasets/stefancomanita/earthquakes-in-romania-from-2012-to-2024">Kaggle</a></td><td>Cutremure din Romania cu aceleasi atribute, marcate cu <code>country = 'RO'</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>3.2 Alerte CAP (generate intern)</h3>
+    <p>
+      Alertele sunt generate automat la declararea crizelor de catre autoritati, conform
+      standardului <a href="http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.html">Common Alerting Protocol v1.2</a>.
+      XML-ul este construit cu <code>DOMDocument</code> din PHP, folosind namespace-ul
+      <code>urn:oasis:names:tc:emergency:cap:1.2</code>. Fiecare alerta contine: identifier,
+      sender, sent, status, msgType, scope, category, event, urgency, severity, certainty,
+      description, instruction, area (areaDesc + circle).
+    </p>
+
+    <h3>3.3 Harti (OpenStreetMap + OSRM)</h3>
+    <p>
+      Vizualizarea cartografica foloseste <a href="https://leafletjs.com/">Leaflet.js</a> cu
+      tile-uri <a href="https://www.openstreetmap.org/">OpenStreetMap</a>. Rutele de evacuare
+      sunt calculate prin serviciul <a href="https://project-osrm.org/">OSRM</a> (Open Source
+      Routing Machine), cu fallback pe linie dreapta cand serviciul nu raspunde.
+    </p>
+  </section>
+
+  <!-- ====== SECTIUNEA 4: FUNCTIONALITATI SISTEM ====== -->
+  <section id="functionalitati">
+    <h2>4. Functionalitati ale sistemului</h2>
+
+    <h3>4.1 Harta interactiva</h3>
+    <p>
+      Pagina <code>map.php</code> afiseaza o harta Leaflet centrata pe Romania cu 5 layer groups
+      comutabile independent: cutremure istorice (markere colorate pe magnitudine), evenimente/crize
+      active (cu zone afectate de 10 km desenate ca cercuri dashed), adaposturi (markere colorate
+      pe tip de calamitate), rute de evacuare (calculate automat prin OSRM catre cele mai
+      apropiate 3 adaposturi), si locatia utilizatorului (prin API-ul de geolocatie al browserului).
+    </p>
+    <p>
+      Un dropdown permite filtrarea simultana a evenimentelor si adaposturilor pe tipul de calamitate
+      (cutremur, incendiu, inundatie). Toate popup-urile sunt construite cu DOM elements
+      (<code>textContent</code>) pentru prevenirea XSS.
+    </p>
+
+    <h3>4.2 Declararea crizelor si generarea alertelor CAP</h3>
+    <p>
+      Utilizatorii cu rol <code>authority</code> sau <code>admin</code> pot declara crize noi
+      din pagina Dashboard. La fiecare declarare, se genereaza automat un document XML CAP v1.2
+      cu instructiuni diferentiate pe tip de calamitate si severitate. Ciclul complet al unei
+      crize este: creare (Alert) &rarr; editare (Update) &rarr; anulare (Cancel) &rarr; reactivare (Alert).
+    </p>
+    <p>
+      Urgenta (<code>urgency</code>) si severitatea (<code>severity</code>) sunt dimensiuni separate
+      conform specificatiei CAP: urgenta indica cat de repede trebuie actionat, severitatea indica
+      intensitatea impactului.
+    </p>
+
+    <h3>4.3 Pagina publica de alerte</h3>
+    <p>
+      Cetatenii pot vizualiza alertele active pe pagina <code>alerts.php</code>, fara autentificare.
+      Fiecare alerta este afisata ca un card cu badge (Alert/Cancel), informatii despre severitate
+      si urgenta, si un buton pentru vizualizarea XML-ului CAP brut.
+    </p>
+
+    <h3>4.4 CRUD adaposturi, utilizatori si alerte</h3>
+    <p>
+      Panoul de administrare (<code>admin.php</code>) ofera 6 tab-uri: Adaposturi, Crize,
+      Utilizatori, Export, Import si Alerte. Toate operatiile CRUD se efectueaza prin Ajax
+      fara reincarcarea paginii, cu modale construite din DOM elements.
+    </p>
+
+    <h3>4.5 Import si export date</h3>
+    <p>
+      Exportul suporta 3 formate: CSV (cu BOM UTF-8 pentru compatibilitate Excel), JSON
+      (pretty-printed cu diacritice nealterate) si XML (consolidat, cu toate alertele CAP).
+      Importul din interfata Web accepta fisiere CSV si JSON pentru adaposturi, evenimente si
+      cutremure, cu validare de format, dimensiune (max 5 MB) si deduplicare.
+    </p>
+
+    <h3>4.6 Rute de evacuare</h3>
+    <p>
+      Pentru fiecare eveniment activ, sistemul calculeaza automat rute de evacuare catre cele
+      mai apropiate 3 adaposturi folosind formula Haversine pentru distanta si serviciul OSRM
+      pentru rutare pe drumuri reale. Rezultatele includ geometria rutei, distanta in km si
+      durata estimata. Daca OSRM nu raspunde, se deseneaza o linie dreapta ca fallback.
+    </p>
+  </section>
+
+  <!-- ====== SECTIUNEA 5: CERINTE NEFUNCTIONALE ====== -->
+  <section id="cerinte-nefunctionale">
+    <h2>5. Cerinte nefunctionale</h2>
+
+    <h3>5.1 Securitate</h3>
+    <p><strong>SQL Injection:</strong> Toate query-urile catre baza de date folosesc Prepared Statements
+      (<code>prepare()</code> + <code>bind_param()</code>). Un audit complet al tuturor fisierelor
+      din <code>models/</code> confirma zero concatenari de variabile in SQL.</p>
+    <p><strong>Cross Site Scripting (XSS):</strong> Toate valorile dinamice afisate in HTML folosesc
+      <code>htmlspecialchars($var, ENT_QUOTES, 'UTF-8')</code>. Pe partea de client, popup-urile
+      de pe harta si cardurile de alerte folosesc <code>textContent</code> si DOM elements.</p>
+    <p><strong>Protectie foldere:</strong> Fisierele <code>.htaccess</code> cu <code>Require all denied</code>
+      blocheaza accesul direct la <code>config/</code>, <code>models/</code>, <code>views/</code>
+      si <code>logs/</code>. Compatibilitate Apache 2.2 si 2.4.</p>
+    <p><strong>Sesiuni:</strong> Cookie-urile de sesiune au flagurile <code>httponly</code> si
+      <code>samesite=Strict</code>. La login se apeleaza <code>session_regenerate_id(true)</code>
+      pentru prevenirea session fixation.</p>
+
+    <h3>5.2 Performanta</h3>
+    <p>
+      Datele seismice sunt importate o singura data si interogate cu paginare si filtrare pe server.
+      Harta incarca adaposturile o singura data si le filtreaza local. Rutele OSRM au timeout de 10
+      secunde cu fallback pe linie dreapta.
+    </p>
+
+    <h3>5.3 Design responsiv</h3>
+    <p>
+      CSS-ul defineste 3 breakpoints: mobil (&lt;600px cu hamburger menu si layout vertical),
+      tableta (600-1024px cu grid pe 2 coloane) si desktop (&gt;1024px). Layoutul foloseste
+      CSS Grid si Flexbox cu <code>auto-fit</code> si <code>minmax()</code> pentru adaptare
+      fluida.
+    </p>
+
+    <h3>5.4 Compatibilitate browser</h3>
+    <p>
+      Aplicatia foloseste <code>fetch()</code> (suportat in toate browserele moderne),
+      <code>var</code> in loc de <code>let/const</code> in JavaScript pentru compatibilitate
+      extinsa, si CSS Variables cu fallback-uri.
+    </p>
+  </section>
+
+  <!-- ====== SECTIUNEA 6: ARHITECTURA ====== -->
+  <section id="arhitectura">
+    <h2>6. Arhitectura</h2>
+
+    <h3>6.1 Modelul MVC</h3>
+    <p>
+      Aplicatia urmeaza arhitectura Model-View-Controller fara framework:
+    </p>
+    <ul>
+      <li><strong>Models</strong> (<code>models/</code>) — functii PHP care interactioneaza cu baza de date prin Prepared Statements. Fiecare entitate are propriul model: <code>UsersModel</code>, <code>EventsModel</code>, <code>SheltersModel</code>, <code>EarthquakesModel</code>, <code>AlertsModel</code>, <code>CAPGenerator</code>, <code>RouteCalculator</code>.</li>
+      <li><strong>Controllers</strong> (<code>controllers/</code>) — logica de business, validare input, verificare roluri, formatare raspunsuri JSON. Includ: <code>AuthController</code>, <code>EventsController</code>, <code>SheltersController</code>, <code>AlertsController</code>, <code>EarthquakesController</code>, <code>ExportController</code>, <code>ImportController</code>.</li>
+      <li><strong>Views</strong> (<code>views/</code>) — template-uri PHP cu layout comun (<code>partials/header.php</code> si <code>partials/footer.php</code>) si view-uri specifice (<code>EventsView</code>, <code>SheltersView</code>, <code>DashboardView</code>, <code>AdminView</code>, <code>MapView</code>, <code>AlertsView</code>).</li>
+    </ul>
+
+    <h3>6.2 API-uri REST</h3>
+    <p>Toate endpoint-urile din <code>api/</code> sunt servicii Web REST cu routing pe <code>REQUEST_METHOD</code>:</p>
+    <table>
+      <thead><tr><th>Endpoint</th><th>GET</th><th>POST</th><th>PUT</th><th>DELETE</th></tr></thead>
+      <tbody>
+        <tr><td><code>api/events.php</code></td><td>Public</td><td>Authority+</td><td>Authority+</td><td>Admin</td></tr>
+        <tr><td><code>api/shelters.php</code></td><td>Public</td><td>Admin</td><td>Admin</td><td>Admin</td></tr>
+        <tr><td><code>api/earthquakes.php</code></td><td>Public</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td><code>api/alerts.php</code></td><td>Public</td><td>—</td><td>—</td><td>Admin</td></tr>
+        <tr><td><code>api/alert_xml.php</code></td><td>Public</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td><code>api/disaster_types.php</code></td><td>Public</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td><code>api/users.php</code></td><td>Admin</td><td>Admin</td><td>Admin</td><td>Admin</td></tr>
+        <tr><td><code>api/export.php</code></td><td>Admin</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td><code>api/import.php</code></td><td>—</td><td>Admin</td><td>—</td><td>—</td></tr>
+        <tr><td><code>api/route_auto.php</code></td><td>Public</td><td>—</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <p>Toate GET-urile returneaza format uniform <code>{"data": [...], "total": N}</code>.
+      Toate POST/PUT/DELETE cu sesiune insuficienta returneaza JSON cu status 401 sau 403.</p>
+
+    <h3>6.3 Schema bazei de date</h3>
+    <p>
+      Baza de date MariaDB foloseste engine InnoDB cu charset <code>utf8mb4</code> si contine
+      7 tabele cu chei straine: <code>disaster_types</code>, <code>users</code>, <code>events</code>,
+      <code>shelters</code>, <code>alerts</code>, <code>earthquakes</code> si <code>evacuation_routes</code>.
+      Campuri ENUM sunt folosite pentru <code>role</code>, <code>severity</code>, <code>urgency</code>,
+      <code>status</code> si <code>msg_type</code>.
+    </p>
+
+    <h3>6.4 Diagrame C4</h3>
+    <figure>
+      <img src="diagrams/c4-context.svg" alt="Diagrama C4 Level 1: System Context">
+      <figcaption>Figura 1. C4 Level 1 — System Context: actorii (Cetatean, Autoritate, Admin) si sistemele externe (Kaggle, OpenStreetMap, OSRM)</figcaption>
+    </figure>
+    <figure>
+      <img src="diagrams/c4-container.svg" alt="Diagrama C4 Level 2: Container">
+      <figcaption>Figura 2. C4 Level 2 — Container: Browser (HTML/CSS/JS + Leaflet), Apache + PHP (MVC), MariaDB, GitHub Pages</figcaption>
+    </figure>
+    <figure>
+      <img src="diagrams/c4-component.svg" alt="Diagrama C4 Level 3: Component">
+      <figcaption>Figura 3. C4 Level 3 — Component: Controllers, Models, Views, CAPGenerator, RouteCalculator, Ajax wrapper, Map.js</figcaption>
+    </figure>
+  </section>
+
+  <!-- ====== SECTIUNEA 7: MOTIVATII DESIGN ====== -->
+  <section id="motivatii-design">
+    <h2>7. Motivatii de design</h2>
+
+    <h3>7.1 De ce PHP fara framework</h3>
+    <p>
+      Cerinta cursului impune implementarea fara framework-uri. Acest lucru ne-a permis intelegerea
+      profunda a ciclului request-response HTTP, a managementului sesiunilor si a construirii manuale
+      a unei arhitecturi MVC. Am ales <code>mysqli</code> in locul PDO pentru acces direct la
+      functionalitati specifice MariaDB.
+    </p>
+
+    <h3>7.2 De ce Leaflet.js</h3>
+    <p>
+      Leaflet este o biblioteca open source (nu framework) de 42 KB, cu suport nativ pentru
+      OpenStreetMap (gratuit, fara API key). A fost preferata fata de Google Maps API pentru
+      absenta costurilor si pentru conformitatea cu cerinta de a folosi resurse open source.
+    </p>
+
+    <h3>7.3 De ce template-uri PHP (nu Twig/Blade)</h3>
+    <p>
+      Template-urile sunt fisiere PHP simple (<code>header.php</code>, <code>footer.php</code>,
+      <code>*View.php</code>) incluse cu <code>require_once</code>. Variabilele de pagina
+      (<code>$page_title</code>, <code>$current_page</code>, <code>$extra_js</code>) sunt setate
+      in controller si consumate de template. Aceasta abordare respecta cerinta de a nu folosi
+      framework-uri, mentinand in acelasi timp principiul DRY.
+    </p>
+
+    <h3>7.4 De ce OSRM pentru rute</h3>
+    <p>
+      OSRM (Open Source Routing Machine) este un serviciu gratuit de rutare pe drumuri reale.
+      Am ales sa calculam rutele de evacuare dinamic (nu stocate static) deoarece adaposturile
+      si evenimentele se modifica in timp real. Rutele sunt calculate pe server (prin
+      <code>RouteCalculator.php</code> cu <code>cURL</code>) si pe client (prin <code>fetch()</code>)
+      cu fallback pe linie dreapta in ambele cazuri.
+    </p>
+  </section>

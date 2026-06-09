@@ -1,4 +1,5 @@
 <?php
+//  publica a adaposturilor de urgenta
 session_start();
 require_once __DIR__ . '/controllers/SheltersController.php';
 $shelters_data = json_decode(shelters_show_json(), true);

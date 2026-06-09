@@ -1,4 +1,5 @@
 <?php
+// Layout pagina alerte publice cu filtru si container
 function display_alerts($alerts) {
     if (!empty($alerts)) {
         echo '<table class="data-table"><thead><tr><th>ID</th><th>Eveniment</th><th>Tip</th><th>Trimis</th><th>CAP XML</th></tr></thead><tbody>';

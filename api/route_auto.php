@@ -1,5 +1,7 @@
 <?php
-/* route_auto.php — Endpoint API public pentru calculul rutelor de evacuare. */
+// api/route_auto.php - Calcul automat rute de evacuare
+// Endpoint public - oricine poate vedea rutele (si cetatenii neautentificati)
+// route_auto.php — Endpoint API public pentru calculul rutelor de evacuare.
 session_start();
 require_once __DIR__ . '/../models/RouteCalculator.php';
 

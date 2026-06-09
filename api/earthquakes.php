@@ -1,4 +1,6 @@
 <?php
+// Date cutremure din Kaggle cu filtrare si paginare
+//   datele sunt read-only, importate o singura data
 session_start();
 require_once __DIR__ . '/../controllers/EarthquakesController.php';
 header('Content-Type: application/json');

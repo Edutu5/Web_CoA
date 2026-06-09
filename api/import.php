@@ -1,4 +1,9 @@
 <?php
+// api/import.php - Import fisiere CSV/JSON (doar admin)
+// Suporta: adaposturi, crize/scenarii de test, date seismologice
+// Limita fisier: 5MB, validare extensie si format
+// api/import.php - Import fisiere CSV/JSON cu adaposturi, crize sau cutremure
+// Limita: 5MB per fisier, doar admin
 session_start();
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/../controllers/AuthController.php';

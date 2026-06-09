@@ -1,4 +1,8 @@
 <?php
+// api/users.php - CRUD utilizatori (acces doar admin)
+// POST=creare, PUT=schimbare rol, DELETE=stergere
+// Adminul nu isi poate modifica/sterge propriul cont (protectie in frontend)
+// api/users.php - CRUD utilizatori, acces doar admin
 session_start();
 require_once __DIR__ . '/../controllers/AuthController.php';
 auth_require('admin');

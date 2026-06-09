@@ -1,4 +1,8 @@
 <?php
+// api/shelters.php - Endpoint REST pt adaposturi
+// GET=public (oricine vede adaposturile), POST/PUT/DELETE=admin
+// api/shelters.php - REST endpoint pt adaposturi
+// GET=public, POST/PUT/DELETE=admin only
 session_start();
 require_once __DIR__ . '/../controllers/SheltersController.php';
 header('Content-Type: application/json');

@@ -1,4 +1,9 @@
 <?php
+// admin.php - Panoul de administrare complet (doar admin)
+// 6 tab-uri: Adaposturi, Crize, Utilizatori, Export, Import, Alerte
+// Toate operatiile CRUD se fac prin Ajax fara reload de pagina
+// admin.php - Panoul de administrare complet (doar admin)
+// Tab-uri: Adaposturi, Crize, Utilizatori, Export, Import, Alerte
 session_start();
 require_once __DIR__ . '/controllers/AuthController.php';
 auth_require('admin');
@@ -17,6 +22,6 @@ require __DIR__ . '/views/partials/header.php';
   </div>
 </div>
 <?php
-$extra_js = '<script src="assets/js/admin.js?v=' . filemtime(__DIR__ . '/assets/js/admin.js') . '"></script>';
+$extra_js = '<script src="assets/js/admin.js?v=' . time() . '"></script>';
 require __DIR__ . '/views/partials/footer.php';
 ?>

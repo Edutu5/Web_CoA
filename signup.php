@@ -1,5 +1,8 @@
 <?php
-/* signup.php — Pagina de inregistrare pentru utilizatori noi (rol: user) */
+// Inregistrare utilizator nou (rol: user)
+// Validari: username min 3 chars, parola min 6 chars, confirmare parola
+// Parola se hash-uieste cu bcrypt inainte de salvare
+
 session_set_cookie_params(['httponly' => true, 'samesite' => 'Strict']);
 session_start();
 

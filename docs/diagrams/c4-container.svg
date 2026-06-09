@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" font-family="Arial, sans-serif">
+  <style>
+    .title { font-size: 18px; font-weight: bold; fill: #333; }
+    .subtitle { font-size: 11px; fill: #666; }
+    .box-label { font-size: 12px; font-weight: bold; fill: #fff; }
+    .box-desc { font-size: 9.5px; fill: rgba(255,255,255,.85); }
+    .arrow-label { font-size: 9px; fill: #555; }
+  </style>
+  <text x="400" y="28" text-anchor="middle" class="title">C4 Level 2 — Container: CoA</text>
+  <text x="400" y="46" text-anchor="middle" class="subtitle">Structura tehnica a platformei</text>
+
+  <!-- Dashed boundary -->
+  <rect x="40" y="60" width="720" height="430" rx="10" fill="none" stroke="#1168bd" stroke-width="1.5" stroke-dasharray="8,4"/>
+  <text x="55" y="80" font-size="11" fill="#1168bd" font-weight="bold">CoA System</text>
+
+  <!-- Browser -->
+  <rect x="80" y="100" width="260" height="100" rx="6" fill="#438dd5"/>
+  <text x="210" y="130" text-anchor="middle" class="box-label">Browser (Client)</text>
+  <text x="210" y="148" text-anchor="middle" class="box-desc">HTML5 + CSS3 + Vanilla JS</text>
+  <text x="210" y="163" text-anchor="middle" class="box-desc">Leaflet.js + OpenStreetMap</text>
+  <text x="210" y="178" text-anchor="middle" class="box-desc">Ajax (fetch API)</text>
+
+  <!-- PHP App -->
+  <rect x="80" y="260" width="260" height="100" rx="6" fill="#1168bd"/>
+  <text x="210" y="290" text-anchor="middle" class="box-label">Apache + PHP 8 (Server)</text>
+  <text x="210" y="308" text-anchor="middle" class="box-desc">MVC: Controllers + Models + Views</text>
+  <text x="210" y="323" text-anchor="middle" class="box-desc">API REST (10 endpoint-uri)</text>
+  <text x="210" y="338" text-anchor="middle" class="box-desc">CAP Generator (DOMDocument)</text>
+
+  <!-- MariaDB -->
+  <rect x="460" y="260" width="260" height="100" rx="6" fill="#2b78c2"/>
+  <text x="590" y="290" text-anchor="middle" class="box-label">MariaDB (Baza de date)</text>
+  <text x="590" y="308" text-anchor="middle" class="box-desc">InnoDB, utf8mb4, 7 tabele</text>
+  <text x="590" y="323" text-anchor="middle" class="box-desc">FK, ENUM, Prepared Statements</text>
+  <text x="590" y="338" text-anchor="middle" class="box-desc">Cutremure, crize, adaposturi, alerte</text>
+
+  <!-- GitHub Pages -->
+  <rect x="460" y="100" width="260" height="80" rx="6" fill="#999"/>
+  <text x="590" y="130" text-anchor="middle" class="box-label">GitHub Pages</text>
+  <text x="590" y="148" text-anchor="middle" class="box-desc">Scholarly HTML (documentatie)</text>
+  <text x="590" y="163" text-anchor="middle" class="box-desc">Diagrame C4, raport IEEE SRS</text>
+
+  <!-- External: OSRM -->
+  <rect x="270" y="410" width="220" height="60" rx="6" fill="#999"/>
+  <text x="380" y="435" text-anchor="middle" class="box-label" style="font-size:11px">OSRM (extern)</text>
+  <text x="380" y="452" text-anchor="middle" class="box-desc">Rutare drumuri reale</text>
+
+  <!-- Arrows -->
+  <line x1="210" y1="200" x2="210" y2="260" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="220" y="235" class="arrow-label">JSON / REST</text>
+
+  <line x1="340" y1="310" x2="460" y2="310" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="385" y="303" class="arrow-label">mysqli</text>
+
+  <line x1="210" y1="360" x2="310" y2="410" stroke="#555" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="230" y="392" class="arrow-label">cURL / HTTP</text>
+
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#555"/>
+    </marker>
+  </defs>
+</svg>

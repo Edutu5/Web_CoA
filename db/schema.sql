@@ -16,6 +16,7 @@ ON DUPLICATE KEY UPDATE name = VALUES(name);
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
+        -- Parola e stocata ca hash bcrypt (60 chars), niciodata in clar
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('user','authority','admin') NOT NULL DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -30,7 +31,9 @@ CREATE TABLE IF NOT EXISTS events (
     longitude DECIMAL(10,7) NOT NULL,
     severity ENUM('low','medium','high','critical') NOT NULL DEFAULT 'medium',
     urgency ENUM('Immediate','Expected','Future','Past','Unknown') NOT NULL DEFAULT 'Immediate',
-    status ENUM('active','resolved') NOT NULL DEFAULT 'active',
+    status -- active = criza in desfasurare, resolved = anulata/rezolvata
+    ENUM('active','resolved') NOT NULL DEFAULT 'active',
+        -- Contor de editari - pt badge-ul "edited" pe cardurile de alerte
     edit_count INT NOT NULL DEFAULT 0,
     created_by INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

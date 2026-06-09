@@ -1,4 +1,5 @@
 <?php
+// Carduri cu statistici rapide (nr. evenimente, alerte, adaposturi)
 function display_dashboard($stats) {
     echo '<div class="stats-grid">';
     $labels = ['Evenimente active' => ['key' => 'active_events', 'id' => 'stat-events'], 'Alerte trimise' => ['key' => 'total_alerts', 'id' => 'stat-alerts'], 'Adăposturi' => ['key' => 'total_shelters', 'id' => 'stat-shelters']];

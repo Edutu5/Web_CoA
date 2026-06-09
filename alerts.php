@@ -1,4 +1,8 @@
 <?php
+// alerts.php - Pagina publica cu alertele CAP emise de autoritati
+// Carduri cu badge-uri Alert/Cancel, mesaj "Pericolul a trecut" pt anulate
+// Filtru dropdown pe tip alerta
+// alerts.php - Pagina publica cu alertele CAP (filtrabila pe tip)
 session_start();
 $page_title = 'Alerte de urgenta';
 $current_page = 'alerts';
@@ -24,6 +28,6 @@ require __DIR__ . '/views/partials/header.php';
         </div>
     </main>
 <?php
-$extra_js = '<script src="assets/js/alerts-public.js?v=' . filemtime(__DIR__ . '/assets/js/alerts-public.js') . '"></script>';
+$extra_js = '<script src="assets/js/alerts-public.js?v=' . time() . '"></script>';
 require __DIR__ . '/views/partials/footer.php';
 ?>

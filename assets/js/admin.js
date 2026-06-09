@@ -1,3 +1,5 @@
+// admin.js - Functii CRUD pt panoul de admin
+// Adaposturi, utilizatori, alerte - toate cu modale si Ajax
 var CURRENT_USER_ID = parseInt(document.body.getAttribute("data-user-id") || "0", 10);
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -14,9 +16,31 @@ document.addEventListener("DOMContentLoaded", function() {
   loadShelters(); loadEvents(); loadUsers(); loadAlerts();
 });
 
-function openModal(html) { document.getElementById("modal-content").innerHTML = html; document.getElementById("modal-overlay").classList.remove("hidden"); }
+// Deschide modalul cu un element DOM (nu innerHTML) - previne XSS
+function openModal(content) {
+  var mc = document.getElementById("modal-content");
+  mc.innerHTML = "";
+  if (typeof content === "string") { mc.textContent = content; }
+  else { mc.appendChild(content); }
+  document.getElementById("modal-overlay").classList.remove("hidden");
+}
 function closeModal() { document.getElementById("modal-overlay").classList.add("hidden"); }
-function esc(s) { var d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+// Creeaza un camp de formular cu label + input (DOM elements)
+function makeFormGroup(labelText, inputId, inputType, value) {
+  var group = document.createElement("div");
+  group.className = "form-group";
+  var label = document.createElement("label");
+  label.textContent = labelText;
+  group.appendChild(label);
+  var input = document.createElement("input");
+  input.id = inputId;
+  input.type = inputType || "text";
+  if (inputType === "number") input.step = "any";
+  input.value = value || "";
+  group.appendChild(input);
+  return group;
+}
 
 function makeCell(text) {
   var td = document.createElement("td");
@@ -69,18 +93,41 @@ function loadShelters() {
 
 function showShelterForm(shelter) {
   var s = shelter || {};
-  var title = s.id ? "Editare Adăpost #" + s.id : "Adaugă Adăpost";
-  openModal(
-    '<h3>' + title + '</h3>' +
-    '<div class="form-group"><label>Nume</label><input id="sf-name" value="' + esc(s.name || "") + '"></div>' +
-    '<div class="form-group"><label>Adresa</label><input id="sf-address" value="' + esc(s.address || "") + '"></div>' +
-    '<div class="form-group"><label>Latitudine</label><input id="sf-lat" type="number" step="any" value="' + (s.latitude || "") + '"></div>' +
-    '<div class="form-group"><label>Longitudine</label><input id="sf-lng" type="number" step="any" value="' + (s.longitude || "") + '"></div>' +
-    '<div class="form-group"><label>Tip calamitate (ID)</label><select id="sf-type"><option value="">General</option><option value="1">Cutremur</option><option value="2">Incendiu</option><option value="3">Inundație</option></select></div>' +
-    '<button class="btn btn-primary" onclick="saveShelter(' + (s.id || 0) + ')">Salvează</button> ' +
-    '<button class="btn" onclick="closeModal()">Anulează</button>'
-  );
-  if (s.disaster_type_id) document.getElementById("sf-type").value = s.disaster_type_id;
+  var isEdit = !!s.id;
+  var frag = document.createElement("div");
+
+  var title = document.createElement("h3");
+  title.textContent = isEdit ? "Editare Adăpost #" + s.id : "Adaugă Adăpost";
+  frag.appendChild(title);
+
+  frag.appendChild(makeFormGroup("Nume", "sf-name", "text", s.name || ""));
+  frag.appendChild(makeFormGroup("Adresa", "sf-address", "text", s.address || ""));
+  frag.appendChild(makeFormGroup("Latitudine", "sf-lat", "number", s.latitude || ""));
+  frag.appendChild(makeFormGroup("Longitudine", "sf-lng", "number", s.longitude || ""));
+
+  var typeGroup = document.createElement("div");
+  typeGroup.className = "form-group";
+  var typeLabel = document.createElement("label");
+  typeLabel.textContent = "Tip calamitate";
+  typeGroup.appendChild(typeLabel);
+  var typeSelect = document.createElement("select");
+  typeSelect.id = "sf-type";
+  var opts = [["", "General"], ["1", "Cutremur"], ["2", "Incendiu"], ["3", "Inundație"]];
+  opts.forEach(function(o) {
+    var opt = document.createElement("option");
+    opt.value = o[0]; opt.textContent = o[1];
+    typeSelect.appendChild(opt);
+  });
+  if (s.disaster_type_id) typeSelect.value = s.disaster_type_id;
+  typeGroup.appendChild(typeSelect);
+  frag.appendChild(typeGroup);
+
+  var saveBtn = makeBtn("Salvează", "btn btn-primary", function() { saveShelter(s.id || 0); });
+  frag.appendChild(saveBtn);
+  frag.appendChild(document.createTextNode(" "));
+  frag.appendChild(makeBtn("Anulează", "btn", function() { closeModal(); }));
+
+  openModal(frag);
 }
 
 function saveShelter(id) {
@@ -190,14 +237,44 @@ function loadUsers() {
 }
 
 function showUserForm() {
-  openModal(
-    '<h3>Adaugă Utilizator</h3>' +
-    '<div class="form-group"><label>Username</label><input id="uf-name"></div>' +
-    '<div class="form-group"><label>Parolă</label><input id="uf-pass" type="password"></div>' +
-    '<div class="form-group"><label>Rol</label><select id="uf-role"><option value="user">user</option><option value="authority">authority</option><option value="admin">admin</option></select></div>' +
-    '<button class="btn btn-primary" onclick="saveUser()">Salvează</button> ' +
-    '<button class="btn" onclick="closeModal()">Anulează</button>'
-  );
+  var frag = document.createElement("div");
+  var title = document.createElement("h3");
+  title.textContent = "Adaugă Utilizator";
+  frag.appendChild(title);
+
+  frag.appendChild(makeFormGroup("Username", "uf-name", "text", ""));
+
+  var passGroup = document.createElement("div");
+  passGroup.className = "form-group";
+  var passLabel = document.createElement("label");
+  passLabel.textContent = "Parolă";
+  passGroup.appendChild(passLabel);
+  var passInput = document.createElement("input");
+  passInput.id = "uf-pass";
+  passInput.type = "password";
+  passGroup.appendChild(passInput);
+  frag.appendChild(passGroup);
+
+  var roleGroup = document.createElement("div");
+  roleGroup.className = "form-group";
+  var roleLabel = document.createElement("label");
+  roleLabel.textContent = "Rol";
+  roleGroup.appendChild(roleLabel);
+  var roleSelect = document.createElement("select");
+  roleSelect.id = "uf-role";
+  ["user", "authority", "admin"].forEach(function(r) {
+    var opt = document.createElement("option");
+    opt.value = r; opt.textContent = r;
+    roleSelect.appendChild(opt);
+  });
+  roleGroup.appendChild(roleSelect);
+  frag.appendChild(roleGroup);
+
+  frag.appendChild(makeBtn("Salvează", "btn btn-primary", function() { saveUser(); }));
+  frag.appendChild(document.createTextNode(" "));
+  frag.appendChild(makeBtn("Anulează", "btn", function() { closeModal(); }));
+
+  openModal(frag);
 }
 
 function saveUser() {
@@ -206,7 +283,7 @@ function saveUser() {
 }
 
 function editUser(id, currentRole, td) {
-  td.innerHTML = "";
+  while (td.firstChild) td.removeChild(td.firstChild);
   var sel = document.createElement("select");
   sel.style.cssText = "padding:4px 8px;font-size:14px;border-radius:4px;border:1px solid #ccc";
   var defOpt = document.createElement("option"); defOpt.value = ""; defOpt.textContent = "-- Alege rol --"; sel.appendChild(defOpt);

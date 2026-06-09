@@ -1,4 +1,9 @@
 <?php
+// ExportController.php - Export date in 3 formate: CSV, JSON, XML CAP
+// Toate exporturile necesita rol admin
+// CSV-ul include BOM UTF-8 pt compatibilitate cu Excel si diacritice
+// ExportController.php - Export CSV (cu BOM pt Excel), JSON, XML CAP
+// Toate exporturile necesita rol admin
 require_once __DIR__ . '/../models/EventsModel.php';
 require_once __DIR__ . '/../models/SheltersModel.php';
 require_once __DIR__ . '/../models/EarthquakesModel.php';
@@ -29,6 +34,7 @@ function export_csv($entity) {
     exit;
 }
 
+// Export JSON cu diacritice nealterate
 function export_json($entity) {
     auth_require('admin');
     $data = [];
@@ -47,6 +53,7 @@ function export_json($entity) {
     exit;
 }
 
+// Export XML - grupeaza toate alertele CAP intr-un singur fisier
 function export_alerts_xml() {
     auth_require('admin');
     $alerts = alerts_get_all();

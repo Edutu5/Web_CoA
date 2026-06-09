@@ -1,15 +1,20 @@
 <?php
-/* index.php — Pagina principala publica: evenimente active si informatii generale */
+// Pagina de start publica
+// Afiseaza: statistici rapide, crize active, cutremure recente din Romania
+// Nu necesita autentificare - oricine o poate accesa
+
 session_start();
 require_once __DIR__ . '/controllers/EventsController.php';
-require_once __DIR__ . '/models/SheltersModel.php';
-require_once __DIR__ . '/models/AlertsModel.php';
-require_once __DIR__ . '/models/EarthquakesModel.php';
+require_once __DIR__ . '/controllers/SheltersController.php';
+require_once __DIR__ . '/controllers/AlertsController.php';
+require_once __DIR__ . '/controllers/EarthquakesController.php';
 
 $events = events_get_all('active');
-$shelters = shelters_get_all();
-$alerts = alerts_get_all();
-$eq_data = earthquakes_get_all('RO', null, 5, 0);
+$shelters_data = json_decode(shelters_show_json(), true);
+$shelters = $shelters_data['data'] ?? [];
+$alerts_data = json_decode(alerts_show_json(), true);
+$alerts = $alerts_data['data'] ?? [];
+$eq_data = earthquakes_get_for_view('RO', null, 5, 0);
 
 $page_title = 'Acasă';
 $current_page = 'home';

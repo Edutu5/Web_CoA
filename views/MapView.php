@@ -1,13 +1,15 @@
 <?php
+ // Container harta + legenda + buton geolocatie + filtru tip calamitate
+//  Legenda cu toggle-uri, filtru pe tip calamitate, buton geolocatie
 function display_map_page() {
     echo '<div id="map-container"></div>';
     echo '<div style="margin-top:10px;display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap">';
     echo '<button id="btn-user-location" class="btn btn-primary">&#128205; Loca&#539;ia mea</button>';
     echo '<div id="map-legend">';
     echo '<h4>Legend&#259;</h4>';
-    echo '<label><input type="checkbox" id="layer-earthquakes" checked> Cutremure</label>';
+    echo '<label><input type="checkbox" id="layer-earthquakes"> Cutremure (istoric)</label>';
     echo '<label><input type="checkbox" id="layer-events" checked> Evenimente</label>';
-    echo '<label><input type="checkbox" id="layer-shelters"> Adăposturi</label>';
+    echo '<label><input type="checkbox" id="layer-shelters"> Ad&#259;posturi</label>';
     echo '<label><input type="checkbox" id="layer-routes" checked> Rute evacuare</label>';
     echo '<hr style="margin:6px 0;border:none;border-top:1px solid #dee2e6">';
     echo '<label style="font-weight:600;font-size:.85rem">Filtreaz&#259; pe tip calamitate:</label>';

@@ -1,15 +1,22 @@
 <?php
+// dashboard.php - Panoul de control pt authority si admin
+// De aici se declara crize noi, se editeaza, se anuleaza sau se reactiveaza
+// Formular de criza sus, lista de crize jos
+// dashboard.php - Panoul de control pt authority si admin
+// De aici se declara, editeaza, anuleaza sau reactiveaza crize
 session_start();
 require_once __DIR__ . '/controllers/AuthController.php';
 auth_require('authority');
-require_once __DIR__ . '/models/EventsModel.php';
-require_once __DIR__ . '/models/SheltersModel.php';
-require_once __DIR__ . '/models/AlertsModel.php';
+require_once __DIR__ . '/controllers/EventsController.php';
+require_once __DIR__ . '/controllers/SheltersController.php';
+require_once __DIR__ . '/controllers/AlertsController.php';
 
 $events = events_get_all();
 $event_count = count($events);
-$alert_count = count(alerts_get_all());
-$shelter_count = count(shelters_get_all());
+$alerts_data = json_decode(alerts_show_json(), true);
+$alert_count = $alerts_data['total'] ?? 0;
+$shelters_data = json_decode(shelters_show_json(), true);
+$shelter_count = $shelters_data['total'] ?? 0;
 
 $page_title = 'Dashboard';
 $current_page = 'dashboard';
@@ -72,10 +79,11 @@ function loadDashboardStats() {
 }
 
 function loadDashboardEvents() {
-  apiGet("api/events.php?status=active").then(function(resp) {
+  // Incarcam TOATE evenimentele (active + resolved) ca sa nu dispara la anulare
+  apiGet("api/events.php").then(function(resp) {
     var container = document.getElementById("events-table");
     container.innerHTML = "";
-    var events = (resp.data || []).slice(0, 5);
+    var events = resp.data || [];
     if (events.length === 0) {
       var empty = document.createElement("p");
       empty.className = "empty";
@@ -89,6 +97,13 @@ function loadDashboardEvents() {
       var li = document.createElement("li");
       li.className = "event-item severity-" + (ev.severity || "medium");
       li.style.position = "relative";
+      // Badge "edited" daca criza a fost modificata
+      if ((ev.edit_count || 0) > 0) {
+        var editedBadge = document.createElement("span");
+        editedBadge.style.cssText = "position:absolute;top:8px;right:8px;background:#17a2b8;color:#fff;font-size:.7rem;padding:2px 8px;border-radius:3px";
+        editedBadge.textContent = "edited";
+        li.appendChild(editedBadge);
+      }
       var badge = document.createElement("span");
       badge.className = "badge";
       badge.textContent = ev.type_name || "";
@@ -129,7 +144,7 @@ function loadDashboardEvents() {
       if ("' . ($_SESSION["role"] ?? "") . '" === "admin") {
         var delBtn = document.createElement("button");
         delBtn.className = "btn btn-sm btn-danger";
-        delBtn.textContent = "\\u2715";
+        delBtn.textContent = "\u2715";
         delBtn.addEventListener("click", function() { deleteEvent(ev.id); });
         actionsSpan.appendChild(delBtn);
       }
@@ -197,19 +212,13 @@ function editEvent(id) {
 
 function deleteEvent(id) {
   if (!confirm("Sigur dorești să ștergi acest eveniment?")) return;
-  apiDelete("api/events.php?id=" + id).then(function() {
-    loadDashboardStats();
-    loadDashboardEvents();
-  });
+  apiDelete("api/events.php?id=" + id).then(function() { loadDashboardStats(); loadDashboardEvents(); });
 }
 
 function cancelEvent(id) {
   if (!confirm("Sigur doresti sa anulezi acest eveniment? Se va genera un CAP Cancel.")) return;
   apiPut("api/events.php?id=" + id, {status: "resolved"}).then(function(r) {
-    if (r.success) {
-      loadDashboardStats();
-      loadDashboardEvents();
-    }
+    if (r.success) { loadDashboardStats(); loadDashboardEvents(); }
   });
 }
 </script>';

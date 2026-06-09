@@ -1,4 +1,5 @@
 <?php
+// export date in CSV/JSON/XML, doar admin
 session_start();
 require_once __DIR__ . '/../controllers/ExportController.php';
 

@@ -5,9 +5,10 @@
 require_once __DIR__ . '/../config/db.php';
 require_once __DIR__ . '/SheltersModel.php';
 
-/*
- Calculeaza distanta in km intre doua coordonate folosind formula Haversine.
- */
+
+//  Calculeaza distanta in km intre doua coordonate folosind formula Haversine.
+
+
 function haversine_distance($lat1, $lng1, $lat2, $lng2) {
     $R = 6371; // raza Pamantului in km
     $dLat = deg2rad($lat2 - $lat1);
@@ -19,10 +20,10 @@ function haversine_distance($lat1, $lng1, $lat2, $lng2) {
     return $R * $c;
 }
 
-/*
- Gaseste cele mai apropiate adaposturi fata de coordonatele date.
- Returneaza adaposturile cu distanta_km adaugata.
- */
+
+ // Gaseste cele mai apropiate adaposturi fata de coordonatele date.
+// Returneaza adaposturile cu distanta_km adaugata.
+
 function find_nearest_shelters($event_lat, $event_lng, $limit = 3)
 {
     $shelters = shelters_get_all();
@@ -42,6 +43,7 @@ function find_nearest_shelters($event_lat, $event_lng, $limit = 3)
  Obtine ruta reala de la OSRM.
  Returneaza geometria, distanta, durata si pasii de navigare, sau null daca serviciul nu raspunde.
  */
+
 function get_osrm_route($from_lat, $from_lng, $to_lat, $to_lng) {
     $url = "https://router.project-osrm.org/route/v1/driving/"
         . $from_lng . "," . $from_lat . ";"
@@ -90,10 +92,12 @@ function get_osrm_route($from_lat, $from_lng, $to_lat, $to_lng) {
     ];
 }
 
-/*
- Calculeaza rutele de evacuare de la un eveniment la cele mai apropiate 3 adaposturi.
- Foloseste OSRM pentru rute reale, cu fallback pe linie dreapta.
- */
+
+
+// Foloseste OSRM pentru rute reale, cu fallback pe linie dreapta.
+
+// Functia principala - combina gasirea adaposturilor cu rutarea OSRM
+
 function calculate_evacuation_routes($event_id)
 {
     require_once __DIR__ . '/EventsModel.php';

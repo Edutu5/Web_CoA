@@ -1,4 +1,9 @@
 <?php
+// seed.php - Creaza conturile demo pt testare
+// Se ruleaza o singura data dupa crearea bazei de date: php scripts/seed.php
+// Conturile: admin/admin123, authority/admin123, user/admin123
+// seed.php - Creaza conturile demo (admin/authority/user)
+// Parolele se hash-uiesc cu bcrypt, se ruleaza o singura data
 require_once __DIR__ . '/../config/db.php';
 $mysql->query("USE web_coa");
 $users = [
@@ -7,8 +12,10 @@ $users = [
     ['user', 'admin123', 'user']
 ];
 foreach ($users as $u) {
-    $hash = password_hash($u[1], PASSWORD_BCRYPT);
-    $stmt = $mysql->prepare("INSERT IGNORE INTO users (username, password_hash, role) VALUES (?, ?, ?)");
+    $hash =
+    \$hash = password_hash($u[1], PASSWORD_BCRYPT);
+    $stmt = $mysql->prepare("// INSERT IGNORE = nu da eroare daca contul exista deja (pt rulari repetate)
+    \$stmt = \$mysql->prepare INTO users (username, password_hash, role) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $u[0], $hash, $u[2]);
     $stmt->execute();
 }

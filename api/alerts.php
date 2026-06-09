@@ -1,4 +1,8 @@
 <?php
+// api/alerts.php - Endpoint alerte CAP
+// GET=public (cetatenii vad alertele), DELETE=admin
+// La stergere se dezactiveaza si evenimentul de pe harta
+// GET=public, DELETE=admin (seteaza si evenimentul ca resolved)
 session_start();
 require_once __DIR__ . '/../controllers/AuthController.php';
 require_once __DIR__ . '/../controllers/AlertsController.php';
