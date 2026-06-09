@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 <link rel="stylesheet" href="assets/css/main.css">
 <?= $extra_head ?? '' ?>
 </head>
-<body<?php if (isset($body_class)) echo ' class="' . htmlspecialchars($body_class, ENT_QUOTES, 'UTF-8') . '"'; ?>>
+<body<?php if (isset($body_class)) echo ' class="' . htmlspecialchars($body_class, ENT_QUOTES, 'UTF-8') . '"'; ?><?php if (isset($_SESSION['user_id'])) echo ' data-user-id="' . (int)$_SESSION['user_id'] . '"'; ?>>
 <nav class="navbar">
   <div class="nav-brand"><a href="index.php">CoA</a></div>
   <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">&#9776;</button>
